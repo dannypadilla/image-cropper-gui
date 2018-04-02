@@ -65,7 +65,13 @@ if __name__ == "__main__":
         cv2.imshow('image', img)
         key = cv2.waitKey(1) & 0xFF
 
-        # Wait for ESC Key to exit
-        if key == 27:
+        # Wait for 's' key to save
+        if key == ord('s'):
+            cv2.imwrite('image.png', img)
+        # Wait for 'r' key to redraw crop region
+        elif key == ord('r'):
+            img
+        # Wait for 'q' key to exit
+        elif key == ord('q'):
             break
     cv2.destroyAllWindows()
