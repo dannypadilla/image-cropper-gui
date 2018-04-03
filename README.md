@@ -21,7 +21,7 @@
     
 
   * issues
-    - retry selecting cropped region
+    - retry selecting cropped region, only works once
 
   * suggests
     - N/A

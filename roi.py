@@ -59,18 +59,18 @@ if __name__ == "__main__":
     cv2.namedWindow('image')
     cv2.setMouseCallback('image', draw)
 
-    #img2 = img.copy
+    img2 = img.copy()
 
     while(1):
         cv2.imshow('image', img)
         key = cv2.waitKey(1) & 0xFF
-
+        retry = False
         # Wait for 's' key to save
         if key == ord('s'):
             cv2.imwrite('image.png', img)
         # Wait for 'r' key to redraw crop region
         elif key == ord('r'):
-            img
+            img = img2
         # Wait for 'q' key to exit
         elif key == ord('q'):
             break
