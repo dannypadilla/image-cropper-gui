@@ -14,14 +14,13 @@ import numpy as np
 import os, sys
 from subprocess import check_output
 
-# Drawing crop section
+# if Drawing crop section, then true
 drawing = False
+
+# keep track of mouse points
 coordinate = []
 
-# Global Coordinates (begin at this point)
-ix = -1
-iy = -1
-
+# reset the crop selection
 def redraw(imgCopy):
     img = imgCopy.copy()
     return img
@@ -29,15 +28,16 @@ def redraw(imgCopy):
 
 # Function to set cropped region
 def draw(event, x, y, flags, param):
-    global ix, iy, drawing
+    global coordinate, drawing
     
     if event == cv2.EVENT_LBUTTONDOWN:
         drawing = True
-        ix, iy = x,y
+        coordinate = [(x,y)]
     elif event == cv2.EVENT_LBUTTONUP:
-        draw = False
-        cv2.rectangle(img, (x, y), (ix,iy), (0, 255, 0), 1)
-        cv2.imshow('image', img)
+        coordinate.append((x,y))
+        drawing = False
+        
+        cv2.rectangle(img, coordinate[0], coordinate[1], (0, 255, 0), 1)
 
 # ***************************************************************** #
 
@@ -70,6 +70,12 @@ if __name__ == "__main__":
         # Wait for 'r' key to redraw crop region
         elif key == ord('r'):
             img = redraw(imgCopy)
+        elif key == ord('c'):
+            # Get coordinates from selected crop region
+            coords = imgCopy[coordinate[0][1]:coordinate[1][1], coordinate[0][0]:coordinate[1][0]]
+            # Display cropped region
+            cv2.imshow("Cropped Region", coords)
+            cv2.waitKey(0)
         # Wait for 'q' key to exit
         elif key == ord('q'):
             break
