@@ -19,10 +19,10 @@
     - Save image with option(key) 's'
     - Quit with option(key) 'q'
     - able to reselect crop region
-    - display cropped region
+    - display cropped region in separate window
 
   * issues
-    - retry selecting cropped region, only works once
+    - breaking out of cropped region window
 
   * suggests
     - N/A
