@@ -22,10 +22,10 @@ coordinate = []
 ix = -1
 iy = -1
 
-
-def redraw(img):
-    pass
-
+def redraw(imgCopy):
+    img = imgCopy.copy()
+    return img
+    
 
 # Function to set cropped region
 def draw(event, x, y, flags, param):
@@ -37,7 +37,7 @@ def draw(event, x, y, flags, param):
     elif event == cv2.EVENT_LBUTTONUP:
         draw = False
         cv2.rectangle(img, (x, y), (ix,iy), (0, 255, 0), 1)
-
+        cv2.imshow('image', img)
 
 # ***************************************************************** #
 
@@ -56,10 +56,9 @@ if __name__ == "__main__":
     #print(fn) # should error check if argv is passed and valid
 
     img = np.zeros( (512, 512, 3), np.uint8)
+    imgCopy = img.copy()
     cv2.namedWindow('image')
     cv2.setMouseCallback('image', draw)
-
-    img2 = img.copy()
 
     while(1):
         cv2.imshow('image', img)
@@ -70,7 +69,7 @@ if __name__ == "__main__":
             cv2.imwrite('image.png', img)
         # Wait for 'r' key to redraw crop region
         elif key == ord('r'):
-            img = img2
+            img = redraw(imgCopy)
         # Wait for 'q' key to exit
         elif key == ord('q'):
             break

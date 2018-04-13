@@ -18,7 +18,7 @@
     - can draw a green box while dragging
     - Save image with option(key) 's'
     - Quit with option(key) 'q'
-    
+    - able to reselect crop region    
 
   * issues
     - retry selecting cropped region, only works once
@@ -31,7 +31,7 @@
     2. display image
     2. draw a box on clicked region (or draggable/resizeable box)
     3. add option(key) to clear box (and retry), save, exit/quit
-    4. add cropping, retry, and save function
+    4. add cropping and save function
     3. resize region (hardcoded size, but eventually a cmd line arg or text box input to specify size)
     4. display cropped region
     5. prompt approval or discard
