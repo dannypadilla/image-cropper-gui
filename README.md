@@ -21,21 +21,22 @@
     - able to reselect crop region
     - display cropped region
 
-  * issues
-    - retry selecting cropped region, only works once
+  * to do
+    - select fixed size if no crop region selected
+    - with click, set fixed size to crop
 
   * suggests
     - N/A
 
   * reqs
-    1. load image from disk
-    2. display image
-    3. draw a box on clicked region (or draggable/resizeable box)
-    4. add option(key) to clear box (and retry), save, exit/quit
-    5. add cropping and save function
+    1. load image from disk :heavy_check_mark:
+    2. display image :heavy_check_mark:
+    3. draw a box on clicked region (or draggable/resizeable box) :heavy_check_mark:
+    4. add option(key) to clear box (and retry), save, exit/quit :heavy_check_mark:
+    5. add cropping and save function :heavy_check_mark:
     6. resize region (hardcoded size, but eventually a cmd line arg or text box input to specify size)
     7. prompt approval or discard
-    8. if approved, store to disk (default folder for now)
-    9. if discard, repeat from #2
-    10. add function to exit (q to quit)
+    8. if approved, store to disk (default folder for now) :heavy_check_mark:
+    9. if discard, repeat from #2 :heavy_check_mark:
+    10. add function to exit (q to quit) :heavy_check_mark:
     

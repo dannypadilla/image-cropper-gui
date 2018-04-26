@@ -53,9 +53,11 @@ if __name__ == "__main__":
     except:
         fn = "default/img/path"
 
-    #print(fn) # should error check if argv is passed and valid
+    if len(sys.argv) > 1:
+        img = cv2.imread(fn)
+    else:
+        img = np.zeros( (512, 512, 3), np.uint8)
 
-    img = np.zeros( (512, 512, 3), np.uint8)
     imgCopy = img.copy()
     cv2.namedWindow('image')
     cv2.setMouseCallback('image', draw)
@@ -64,9 +66,9 @@ if __name__ == "__main__":
         cv2.imshow('image', img)
         key = cv2.waitKey(1) & 0xFF
         retry = False
-        # Wait for 's' key to save
+        # Wait for 's' key to save                                                                                                                                          
         if key == ord('s'):
-            cv2.imwrite('image.png', img)
+            cv2.imwrite('cropped_img.png', coords)
         # Wait for 'r' key to redraw crop region
         elif key == ord('r'):
             img = redraw(imgCopy)
@@ -75,7 +77,6 @@ if __name__ == "__main__":
             coords = imgCopy[coordinate[0][1]:coordinate[1][1], coordinate[0][0]:coordinate[1][0]]
             # Display cropped region
             cv2.imshow("Cropped Region", coords)
-            cv2.waitKey(0)
         # Wait for 'q' key to exit
         elif key == ord('q'):
             break
