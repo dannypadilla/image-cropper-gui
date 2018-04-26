@@ -19,7 +19,7 @@
     - Save image with option(key) 's'
     - Quit with option(key) 'q'
     - able to reselect crop region
-    - display cropped region
+    - display cropped region in separate window
 
   * to do
     - select fixed size if no crop region selected
@@ -39,4 +39,3 @@
     8. if approved, store to disk (default folder for now) :heavy_check_mark:
     9. if discard, repeat from #2 :heavy_check_mark:
     10. add function to exit (q to quit) :heavy_check_mark:
-    
