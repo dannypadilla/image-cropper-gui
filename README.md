@@ -20,10 +20,10 @@
     - Quit with option(key) 'q'
     - able to reselect crop region
     - display cropped region in separate window
+    - if click, set size to be 80x80
 
   * to do
     - select fixed size if no crop region selected
-    - with click, set fixed size to crop
 
   * suggests
     - N/A
@@ -35,7 +35,7 @@
     4. add option(key) to clear box (and retry), save, exit/quit :heavy_check_mark:
     5. add cropping and save function :heavy_check_mark:
     6. resize region (hardcoded size, but eventually a cmd line arg or text box input to specify size)
-    7. prompt approval or discard
+    7. prompt approval or discard :heavy_check_mark:
     8. if approved, store to disk (default folder for now) :heavy_check_mark:
     9. if discard, repeat from #2 :heavy_check_mark:
     10. add function to exit (q to quit) :heavy_check_mark:

@@ -14,9 +14,6 @@ import numpy as np
 import os, sys
 from subprocess import check_output
 
-# if Drawing crop section, then true
-drawing = False
-
 # keep track of mouse points
 coordinate = []
 
@@ -30,14 +27,19 @@ def redraw(imgCopy):
 def draw(event, x, y, flags, param):
     global coordinate, drawing
     
+    # The event happening whether drag or click
     if event == cv2.EVENT_LBUTTONDOWN:
-        drawing = True
         coordinate = [(x,y)]
     elif event == cv2.EVENT_LBUTTONUP:
         coordinate.append((x,y))
-        drawing = False
-        
-        cv2.rectangle(img, coordinate[0], coordinate[1], (0, 255, 0), 1)
+        # Check if the coordinate was clicked
+        if(coordinate[0] == coordinate[1]):
+            coordinate[0] = (216,216)
+            coordinate[1] = (296,296)
+            cv2.rectangle(img, coordinate[0] , coordinate[1], (0, 255, 0), 1)
+        # if drag and drop then this
+        else:
+            cv2.rectangle(img, coordinate[0], coordinate[1], (0, 255, 0), 1)
 
 # ***************************************************************** #
 
