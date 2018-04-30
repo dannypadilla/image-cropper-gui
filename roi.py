@@ -25,11 +25,14 @@ def redraw(imgCopy):
 
 # Function to set cropped region
 def draw(event, x, y, flags, param):
-    global coordinate, drawing
+    global coordinate
     
     # The event happening whether drag or click
     if event == cv2.EVENT_LBUTTONDOWN:
         coordinate = [(x,y)]
+        if(x%8 != 0 or y%8 != 0):
+            val = x + (8 - (x%8))
+            coordinate[0] = (val, val)
     elif event == cv2.EVENT_LBUTTONUP:
         coordinate.append((x,y))
         # Check if the coordinate was clicked
@@ -39,6 +42,10 @@ def draw(event, x, y, flags, param):
             cv2.rectangle(img, coordinate[0] , coordinate[1], (0, 255, 0), 1)
         # if drag and drop then this
         else:
+            if(x%8 != 0 or y%8 != 0):
+                val = x + (8 - (x%8))
+                coordinate[1] = (val, val)
+                
             cv2.rectangle(img, coordinate[0], coordinate[1], (0, 255, 0), 1)
 
 # ***************************************************************** #
