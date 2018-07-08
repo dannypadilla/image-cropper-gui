@@ -30,6 +30,19 @@ ix, iy = -1, -1
 roi = None
 
 
+def get_roi(img, x, y, w, h):
+    ''' handle different mouse dragging directions '''
+    if (y > h and x > w): # lower right to upper left
+        img_roi = img[h:y, w:x]
+    elif (y < h and x > w): # upper right to lower left
+        img_roi = img[y:h, w:x]
+    elif (y > h and x < w): # lower left to upper right
+        img_roi = img[h:y, x:w]
+    else: # upper left to bottom right
+        img_roi = img[y:h, x:w]
+    return img_roi
+
+
 # gets file names from a dir - includes file extension
 # returns as a list
 def get_file_names_from_dir(file_path):
@@ -119,16 +132,8 @@ if __name__ == "__main__":
         
         if (roi is not None): # if ROI has been created
             x, y, w, h = roi
-            
-            ''' handle different mouse dragging directions '''
-            if (y > h and x > w): # lower right to upper left
-                img_roi = img[h:y, w:x]
-            elif (y < h and x > w): # upper right to lower left
-                img_roi = img[y:h, w:x]
-            elif (y > h and x < w): # lower left to upper right
-                img_roi = img[h:y, x:w]
-            else: # upper left to bottom right
-                img_roi = img[y:h, x:w]
+
+            img_roi = get_roi(img, x, y, w, h)
                 
             if (k == ord("v") ): # view roi
                 print("\n\tViewing ROI "  + str(roi) )
