@@ -73,7 +73,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         img = cv2.imread(img_path)
     else:
-        img = np.zeros( (512, 512, 3), np.uint8 ) # for testing
+        img = np.zeros( (512, 512, 3), np.uint8 ) # for testing - black image
 
     # future labeling
     label = 1
@@ -93,6 +93,12 @@ if __name__ == "__main__":
         k = cv2.waitKey(1) & 0xFF
         if (k == 27 or k == ord("q") ): # exit
             break
+        elif (k == ord("f") ): # move forward to next image
+            print("\nNext Image - *not implemented yet*\n")
+            img_counter += 1
+        elif (k == ord("d") ): # move back to prev image
+            print("\nPrevious Image - *not implemented yet*\n")
+            image_counter -= 1
         
         if (roi is not None):
             x, y, w, h = roi
