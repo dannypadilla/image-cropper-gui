@@ -106,8 +106,10 @@ if __name__ == "__main__":
     img_counter = 0
 
     # dir stuff
-    labels_dir_path = "./labels/"
-    imgs_dir_path = "./images/"
+    labels_dir_path = "./labels/" # where to store label txt files
+    imgs_dir_path = "./images/" # where to grab images from
+    rois_dir_path = "./rois/" # where to store roi
+    
     file_names_with_ext = get_file_names_from_dir(imgs_dir_path)
     file_names = [x.split(".")[0] for x in file_names_with_ext] # gets name only - discards extension
     number_of_imgs = len(file_names)
@@ -190,10 +192,10 @@ if __name__ == "__main__":
                 cv2.moveWindow("roi", img_w, 87)
             elif(k == ord("s") ): # save roi after viewing it
                 local_roi_counter += 1
-                path = "rois/" + file_names[img_counter] + "_" + str(local_roi_counter) + ".jpg" # need to change this to correspond to naming
+                path = rois_dir_path + file_names[img_counter] + "_" + str(local_roi_counter) + ".jpg"
                 print("\n* Saved ROI #" + str(local_roi_counter) + " " + str(roi) + " to: " + path)
                 cv2.imwrite(path, img_roi)
-                print(str(LABEL), str(roi), file=f)
+                print(str(LABEL), x, y, w, h, file=f)
                 cv2.destroyWindow("roi")
                 roi = None
             elif(k == ord("c") ): # clear roi
