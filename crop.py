@@ -110,6 +110,7 @@ if __name__ == "__main__":
     imgs_dir_path = "./images/"
     file_names_with_ext = get_file_names_from_dir(imgs_dir_path)
     file_names = [x.split(".")[0] for x in file_names_with_ext] # gets name only - discards extension
+    number_of_imgs = len(file_names)
 
     img = cv2.imread(imgs_dir_path + file_names[img_counter] + ".jpg" )
     
@@ -136,12 +137,12 @@ if __name__ == "__main__":
         k = cv2.waitKey(1) & 0xFF
         
         if (k == 27 or k == ord("q") ): # exit
-            print("\n\tQ was pressed\n")
+            print("\n\tQ was pressed - Quitting\n")
             global_roi_counter += local_roi_counter
             print(str(global_roi_counter) + " ROI(s) were stored!\n")
             break
         
-        elif (k == ord("f") and (img_counter < len(file_names) ) ): # move forward to next image
+        elif (k == ord("f") and (img_counter < number_of_imgs) ): # move forward to next image
             print("\n\tNext Image - *not implemented yet*")
             roi = None
             cv2.destroyWindow("roi")
@@ -172,6 +173,8 @@ if __name__ == "__main__":
             cv2.destroyWindow("image")
             cv2.namedWindow("image")
             cv2.setMouseCallback("image", draw_rectangle, img_cpy)
+        elif (k == ord("r") ): # refresh image (remove all markings on img)
+            print("\n\tR was pressed - REFRESH * not implemented yet")
         
         if (roi is not None): # if ROI has been created
             x, y, w, h = roi
@@ -187,7 +190,7 @@ if __name__ == "__main__":
                 cv2.moveWindow("roi", img_w, 87)
             elif(k == ord("s") ): # save roi after viewing it
                 local_roi_counter += 1
-                path = "rois/cropped_img_" + str(img_counter) + ".jpg" # need to change this to correspond to naming
+                path = "rois/" + file_names[img_counter] + "_" + str(local_roi_counter) + ".jpg" # need to change this to correspond to naming
                 print("\n* Saved ROI #" + str(local_roi_counter) + " " + str(roi) + " to: " + path)
                 cv2.imwrite(path, img_roi)
                 print(str(LABEL), str(roi), file=f)
@@ -195,8 +198,8 @@ if __name__ == "__main__":
                 roi = None
             elif(k == ord("c") ): # clear roi
                 print("\n\tCleared ROI " + str(roi) )
-                cv2.destroyWindow("roi")
                 roi = None
+                cv2.destroyWindow("roi")
 
     f.close()
     cv2.destroyAllWindows()
