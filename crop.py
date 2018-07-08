@@ -38,6 +38,8 @@ def get_roi(img, x, y, w, h):
         img_roi = img[y:h, w:x]
     elif (y > h and x < w): # lower left to upper right
         img_roi = img[h:y, x:w]
+    elif (y == h and x == w):
+        img_roi = None
     else: # upper left to bottom right
         img_roi = img[y:h, x:w]
     return img_roi
@@ -134,8 +136,11 @@ if __name__ == "__main__":
             x, y, w, h = roi
 
             img_roi = get_roi(img, x, y, w, h)
-                
-            if (k == ord("v") ): # view roi
+            if img_roi is None:
+                print("\nERROR:\tROI " + str(roi) + " is Out-of-Bounds OR not large enough")
+                cv2.destroyWindow("roi")
+                roi = None
+            elif (k == ord("v") ): # view roi
                 print("\n\tViewing ROI "  + str(roi) )
                 cv2.imshow("roi", img_roi)
                 cv2.moveWindow("roi", img_w, 87)
