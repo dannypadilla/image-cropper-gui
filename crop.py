@@ -6,6 +6,13 @@ This program provides something....
 Usage:
 crop.py [<some_args>, here]
 
+v - view cropped ROI (separate window)
+c - close ROI window
+s - save ROI
+f - move forward
+d - move back
+q - quit
+
 Output:
  Stores a cropped ROI to ./rois/
 
@@ -84,6 +91,8 @@ if __name__ == "__main__":
     #cv2.setMouseCallback("image", draw_rectangle, img)
     cv2.setMouseCallback("image", draw_rectangle, img_cpy)
 
+    global_roi_counter = 0
+    local_roi_counter = 0
     img_counter = 1
 
     while(1):
@@ -91,16 +100,24 @@ if __name__ == "__main__":
         cv2.imshow("image", img_cpy)
         
         k = cv2.waitKey(1) & 0xFF
+        
         if (k == 27 or k == ord("q") ): # exit
+            print("\n\tQ was pressed\n")
+            global_roi_counter += local_roi_counter
+            print(str(global_roi_counter) + " ROI(s) were stored!\n")
             break
         elif (k == ord("f") ): # move forward to next image
-            print("\nNext Image - *not implemented yet*\n")
-            img_counter += 1
+            print("\n\tNext Image - *not implemented yet*")
+            img_counter += 1 # for file name purposes
+            global_roi_counter += local_roi_counter
+            local_roi_counter = 0
         elif (k == ord("d") ): # move back to prev image
-            print("\nPrevious Image - *not implemented yet*\n")
-            image_counter -= 1
+            print("\n\tPrevious Image - *not implemented yet*")
+            img_counter -= 1 # for file name purposes
+            global_roi_counter += local_roi_counter
+            local_roi_counter = 0
         
-        if (roi is not None):
+        if (roi is not None): # if ROI has been created
             x, y, w, h = roi
             
             ''' handle different mouse dragging directions '''
@@ -114,16 +131,18 @@ if __name__ == "__main__":
                 img_roi = img[y:h, x:w]
                 
             if (k == ord("v") ): # view roi
+                print("\n\tViewing ROI "  + str(roi) )
                 cv2.imshow("roi", img_roi)
                 cv2.moveWindow("roi", img_w, 87)
             elif(k == ord("s") ): # save roi after viewing it
                 path = "rois/cropped_img_" + str(img_counter) + ".jpg"
+                print("\n* Saved ROI #" + str(local_roi_counter) + " " + str(roi) + " to: " + path)
                 cv2.imwrite(path, img_roi)
                 img_counter += 1
-                print("Saved ROI " + str(roi) + " to: " + path)
                 cv2.destroyWindow("roi")
                 roi = None
             elif(k == ord("c") ): # clear roi
+                print("\n\tCleared ROI " + str(roi) )
                 cv2.destroyWindow("roi")
                 roi = None
 
