@@ -16,10 +16,22 @@ import numpy as np
 import os, sys
 from subprocess import check_output
 
+
 ''' GLOBAL VARIABLES ''' 
 drawing = False # true if mouse is pressed
 ix, iy = -1, -1
 roi = None
+
+
+# gets file names from a dir - includes file extension
+# returns as a list
+def get_file_names_from_dir(file_path):
+    ls = []
+    with os.scandir(file_path) as it:
+        for entry in it:
+            if not entry.name.startswith(".") and entry.is_file:
+                ls.append(entry.name)
+        return ls
 
 
 # mouse callback function
@@ -32,14 +44,17 @@ def draw_rectangle(event, x, y, flags, param):
         ix, iy = x, y
     elif (event == cv2.EVENT_MOUSEMOVE):
         if drawing == True:
+            #drawing = False
             #cv2.rectangle(img, (ix, iy), (x, y), (0, 255, 0), 1)
-            cv2.rectangle(img_cpy, (ix, iy), (x, y), (0, 255, 0), 1)
-            #cv2.rectangle(param, (ix, iy), (x, y), (0, 255, 0), 1)
+            cv2.rectangle(param, (ix, iy), (x, y), (0, 255, 0), 1)
+            #cv2.rectangle(img_cpy, (ix, iy), (x, y), (0, 255, 0), 1)
+            #drawing = False
     elif (event == cv2.EVENT_LBUTTONUP):
         drawing = False
         roi = (ix, iy, x, y)
         #cv2.rectangle(img, (ix, iy), (x, y), (0, 255, 0), 1)
         cv2.rectangle(param, (ix, iy), (x, y), (0, 255, 0), 1)
+        #cv2.rectangle(img_cpy, (ix, iy), (x, y), (0, 255, 0), 1)
 
 
 if __name__ == "__main__":
@@ -72,7 +87,8 @@ if __name__ == "__main__":
     img_counter = 1
 
     while(1):
-        cv2.imshow("image", img)
+        #cv2.imshow("image", img)
+        cv2.imshow("image", img_cpy)
         
         k = cv2.waitKey(1) & 0xFF
         if (k == 27 or k == ord("q") ): # exit
