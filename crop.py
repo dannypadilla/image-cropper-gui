@@ -66,8 +66,8 @@ if __name__ == "__main__":
     img_l, img_w, ch = img.shape
     img_cpy = img.copy()
     cv2.namedWindow("image")
-    cv2.setMouseCallback("image", draw_rectangle, img)
-    #cv2.setMouseCallback("image", draw_rectangle, img_cpy)
+    #cv2.setMouseCallback("image", draw_rectangle, img)
+    cv2.setMouseCallback("image", draw_rectangle, img_cpy)
 
     img_counter = 1
 
@@ -75,7 +75,7 @@ if __name__ == "__main__":
         cv2.imshow("image", img)
         
         k = cv2.waitKey(1) & 0xFF
-        if (k == 27): # exit
+        if (k == 27 or k == ord("q") ): # exit
             break
         
         if (roi is not None):
@@ -95,9 +95,10 @@ if __name__ == "__main__":
                 cv2.imshow("roi", img_roi)
                 cv2.moveWindow("roi", img_w, 87)
             elif(k == ord("s") ): # save roi after viewing it
-                cv2.imwrite("rois/cropped_img_" + str(img_counter) + ".jpg", img_roi)
+                path = "rois/cropped_img_" + str(img_counter) + ".jpg"
+                cv2.imwrite(path, img_roi)
                 img_counter += 1
-                print("saved:", roi)
+                print("Saved ROI " + str(roi) + " to: " + path)
                 cv2.destroyWindow("roi")
                 roi = None
             elif(k == ord("c") ): # clear roi
