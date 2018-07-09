@@ -2,12 +2,14 @@
 This program provides something.... 
 * 1. draw a box around a region-of-interest (ROI) to crop
 * 2. roi is stored to disk (./cropped/)
+* 3. x, y, w, h coordinates of ROI are stored in a txt file (./labels/)
 
 Usage:
 crop.py [<some_args>, here]
 
 v - view cropped ROI (separate window)
 c - close ROI window
+r - refresh image (partial implementation)
 s - save ROI
 f - move forward
 d - move back
@@ -15,6 +17,7 @@ q - quit
 
 Output:
  Stores a cropped ROI to ./rois/
+ Stores coords of cropped ROI as a .txt file corresponding to the img name to ./labels/
 
 error check: for images too small, calc area of rectange
 '''
@@ -32,8 +35,8 @@ ix, iy = -1, -1
 roi = None
 
 
+# handle different mouse dragging directions
 def get_roi(img, x, y, w, h):
-    ''' handle different mouse dragging directions '''
     if (y > h and x > w): # lower right to upper left
         img_roi = img[h:y, w:x]
     elif (y < h and x > w): # upper right to lower left
@@ -61,24 +64,22 @@ def get_file_names_from_dir(file_path):
 # mouse callback function
 def draw_rectangle(event, x, y, flags, param):
     global ix, iy, drawing, roi
-    img_cpy = param.copy()
     
     if (event == cv2.EVENT_LBUTTONDOWN):
         drawing = True
         ix, iy = x, y
+        
     elif (event == cv2.EVENT_MOUSEMOVE):
         if drawing == True:
-            #drawing = False
-            #cv2.rectangle(img, (ix, iy), (x, y), (0, 255, 0), 1)
-            cv2.rectangle(param, (ix, iy), (x, y), (0, 255, 0), 1)
-            #cv2.rectangle(img_cpy, (ix, iy), (x, y), (0, 255, 0), 1)
-            #drawing = False
+            tmp_img = param.copy()
+            cv2.rectangle(tmp_img, (ix, iy), (x, y), (0, 255, 0), 1)
+            cv2.imshow("image", tmp_img)
+            
     elif (event == cv2.EVENT_LBUTTONUP):
+        tmp_img = param.copy()
         drawing = False
         roi = (ix, iy, x, y)
-        #cv2.rectangle(img, (ix, iy), (x, y), (0, 255, 0), 1)
-        cv2.rectangle(param, (ix, iy), (x, y), (0, 255, 0), 1)
-        #cv2.rectangle(img_cpy, (ix, iy), (x, y), (0, 255, 0), 1)
+        cv2.rectangle(tmp_img, (ix, iy), (x, y), (0, 255, 0), 1)
 
 
 if __name__ == "__main__":
@@ -94,13 +95,7 @@ if __name__ == "__main__":
         img_path = "../images/front10.jpg"
         #img_path = "../images/front98.jpg"
 
-    '''
-    if len(sys.argv) > 1:
-        img = cv2.imread(img_path)
-    else:
-        img = np.zeros( (512, 512, 3), np.uint8 ) # for testing - black image
-    '''
-
+    # counters
     global_roi_counter = 0
     local_roi_counter = 0
     img_counter = 0
@@ -114,18 +109,21 @@ if __name__ == "__main__":
     file_names = [x.split(".")[0] for x in file_names_with_ext] # gets name only - discards extension
     number_of_imgs = len(file_names)
 
+    # image stuff
     img = cv2.imread(imgs_dir_path + file_names[img_counter] + ".jpg" )
-    
     img_l, img_w, ch = img.shape
-    img_cpy = img.copy()
-    cv2.namedWindow("image")
-    #cv2.setMouseCallback("image", draw_rectangle, img)
-    cv2.setMouseCallback("image", draw_rectangle, img_cpy)
+    tmp_img = img.copy()
 
-    
+    # window/screen stuff
+    cv2.namedWindow("image")
+    cv2.setMouseCallback("image", draw_rectangle, tmp_img)
+    cv2.imshow("image", img)
+
+    # i/o setup
     if (img_counter < len(file_names) ): # make sure don't go out of bound
         try:
-            f = open(labels_dir_path + file_names[img_counter] + ".txt", "a+")
+            f = open(labels_dir_path + file_names[img_counter] + ".txt", "a+") # maybe put this is while loop
+            # since it currently makes a txt file for all imgs.. even if no ROI is created
         except:
             print("File I/O error")
             exit()
@@ -133,8 +131,6 @@ if __name__ == "__main__":
         print("Reached END OF IMAGES")
 
     while(1):
-        #cv2.imshow("Image #" + str(img_counter + 1), img)
-        cv2.imshow("image", img_cpy) # handle different images
         
         k = cv2.waitKey(1) & 0xFF
         
@@ -145,7 +141,7 @@ if __name__ == "__main__":
             break
         
         elif (k == ord("f") and (img_counter < number_of_imgs) ): # move forward to next image
-            print("\n\tNext Image - *not implemented yet*")
+            print("\n\tNext Image")
             roi = None
             cv2.destroyWindow("roi")
             img_counter += 1 # for file name purposes
@@ -161,7 +157,7 @@ if __name__ == "__main__":
             cv2.setMouseCallback("image", draw_rectangle, img_cpy)
             
         elif (k == ord("d") and (img_counter >= 0) ): # move back to prev image
-            print("\n\tPrevious Image - *not implemented yet*")
+            print("\n\tPrevious Image")
             roi = None
             cv2.destroyWindow("roi")
             img_counter -= 1 # for file name purposes
@@ -177,6 +173,8 @@ if __name__ == "__main__":
             cv2.setMouseCallback("image", draw_rectangle, img_cpy)
         elif (k == ord("r") ): # refresh image (remove all markings on img)
             print("\n\tR was pressed - REFRESH * not implemented yet")
+            tmp_img = img.copy()
+            cv2.imshow("image", tmp_img)
         
         if (roi is not None): # if ROI has been created
             x, y, w, h = roi
@@ -202,6 +200,8 @@ if __name__ == "__main__":
                 print("\n\tCleared ROI " + str(roi) )
                 roi = None
                 cv2.destroyWindow("roi")
+                tmp_img = img.copy()
+                cv2.imshow("image", tmp_img)
 
     f.close()
     cv2.destroyAllWindows()
