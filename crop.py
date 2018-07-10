@@ -181,10 +181,12 @@ if __name__ == "__main__":
             x, y, w, h = roi
             img_roi = get_roi(img, x, y, w, h)
             
-            if img_roi is None: # bug check
+            if img_roi is None: # bug check - need to identify small boxes
                 print("\nERROR:\tROI " + str(roi) + " is Out-of-Bounds OR not large enough")
                 cv2.destroyWindow("roi")
                 roi = None
+                tmp_img = img.copy()
+                cv2.imshow("image", tmp_img)
                 
             elif (k == ord("v") ): # view roi
                 print("\n\tViewing ROI "  + str(roi) )
