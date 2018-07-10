@@ -59,7 +59,7 @@ def get_file_names_from_dir(file_path):
         for entry in it:
             if not entry.name.startswith(".") and entry.is_file:
                 ls.append(entry.name)
-        return ls
+        return sorted(ls)
 
 
 # mouse callback function
