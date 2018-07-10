@@ -402,7 +402,13 @@ Temporary Items
 .apdisk
 
 # images
-*.jpg
+/images/*.jpg
 
 # zip files
 *.zip
+
+# labels
+/labels/*.txt
+
+# roi
+/rois/*.txt
