@@ -171,7 +171,9 @@ if __name__ == "__main__":
             cv2.imshow("image", tmp_img)
 
         elif (k == ord("r") ): # refresh image (remove all markings on img)
-            print("\n\tR was pressed - REFRESH * not implemented yet")
+            print("\n\tR was pressed - REFRESHED Image")
+            roi = None
+            cv2.destroyWindow("roi")
             tmp_img = img.copy()
             cv2.imshow("image", tmp_img)
         
