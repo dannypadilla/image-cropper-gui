@@ -6,21 +6,22 @@
     - numpy1.14+ (pip3 install numpy)
 
   * docs
-    - [Start Here](https://docs.opencv.org/3.3.0/dc/d4d/tutorial_py_table_of_contents_gui.html "Start with this")
-    - [Where code is from](https://docs.opencv.org/3.3.0/db/d5b/tutorial_py_mouse_handling.html)
-    - [OpenCV/Python tutorials](https://docs.opencv.org/3.3.0/d6/d00/tutorial_py_root.html "Really good")
-    - [OpenCV Python Docs](https://docs.opencv.org/3.3.0/index.html)
+    - [Start Here](https://docs.opencv.org/3.4.1/dc/d4d/tutorial_py_table_of_contents_gui.html "Start with this")
+    - [Where code is from](https://docs.opencv.org/3.4.1/db/d5b/tutorial_py_mouse_handling.html)
+    - [OpenCV/Python tutorials](https://docs.opencv.org/3.4.1/d6/d00/tutorial_py_root.html "Really good")
+    - [OpenCV Python GUI Docs](https://docs.opencv.org/3.4.1/d7/dfc/group__highgui.html)
+    - [OpenCV Python Docs](https://docs.opencv.org/3.4.1/index.html)
 
 ## state
 
   * currently
-    - displays a black image
+    - displays a default image
     - can draw a green box while dragging
-    - Save image with option(key) 's'
-    - Quit with option(key) 'q'
+    - View cropped region of interest with 'v' key
+    - Save ROI with 's' key
+    - Quit with program with 'q' or ESC key
     - able to reselect crop region
     - display cropped region in separate window
-    - if click, set size to be 80x80
 
   * to do
     - select fixed size if no crop region selected
@@ -31,7 +32,7 @@
   * reqs
     1. load image from disk :heavy_check_mark:
     2. display image :heavy_check_mark:
-    3. draw a box on clicked region (or draggable/resizeable box) :heavy_check_mark:
+    3. stores (x, y, w, h) coordinates of ROI to a txt file along with label
     4. add option(key) to clear box (and retry), save, exit/quit :heavy_check_mark:
     5. add cropping and save function :heavy_check_mark:
     6. resize region (hardcoded size, but eventually a cmd line arg or text box input to specify size)
