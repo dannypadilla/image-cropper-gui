@@ -156,7 +156,7 @@ if __name__ == "__main__":
             tmp_img = img.copy()
             cv2.imshow("image", tmp_img)
             
-        elif (k == ord("d") and (img_counter >= 0) ): # move back to prev image
+        elif (k == ord("d") and (img_counter > 0) ): # move back to prev image
             print("\n\tPrevious Image")
             roi = None
             cv2.destroyWindow("roi")
