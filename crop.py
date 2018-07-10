@@ -33,6 +33,7 @@ LABEL = 2
 drawing = False # true if mouse is pressed
 ix, iy = -1, -1
 roi = None
+img = None
 
 
 # handle different mouse dragging directions
@@ -71,12 +72,14 @@ def draw_rectangle(event, x, y, flags, param):
         
     elif (event == cv2.EVENT_MOUSEMOVE):
         if drawing == True:
-            tmp_img = param.copy()
+            #tmp_img = param.copy()
+            tmp_img = img.copy()
             cv2.rectangle(tmp_img, (ix, iy), (x, y), (0, 255, 0), 1)
             cv2.imshow("image", tmp_img)
             
     elif (event == cv2.EVENT_LBUTTONUP):
-        tmp_img = param.copy()
+        #tmp_img = param.copy()
+        tmp_img = img.copy()
         drawing = False
         roi = (ix, iy, x, y)
         cv2.rectangle(tmp_img, (ix, iy), (x, y), (0, 255, 0), 1)
@@ -93,7 +96,6 @@ if __name__ == "__main__":
         img_path = sys.argv[1]
     except:
         img_path = "../images/front10.jpg"
-        #img_path = "../images/front98.jpg"
 
     # counters
     global_roi_counter = 0
@@ -116,7 +118,7 @@ if __name__ == "__main__":
 
     # window/screen stuff
     cv2.namedWindow("image")
-    cv2.setMouseCallback("image", draw_rectangle, tmp_img)
+    cv2.setMouseCallback("image", draw_rectangle)
     cv2.imshow("image", img)
 
     # i/o setup
@@ -151,10 +153,8 @@ if __name__ == "__main__":
             f = open(labels_dir_path + file_names[img_counter] + ".txt", "a+")
             img_path = "./images/" + file_names[img_counter] + ".jpg"
             img = cv2.imread(img_path)
-            img_cpy = img.copy()
-            cv2.destroyWindow("image")
-            cv2.namedWindow("image")
-            cv2.setMouseCallback("image", draw_rectangle, img_cpy)
+            tmp_img = img.copy()
+            cv2.imshow("image", tmp_img)
             
         elif (k == ord("d") and (img_counter >= 0) ): # move back to prev image
             print("\n\tPrevious Image")
@@ -167,10 +167,9 @@ if __name__ == "__main__":
             f = open(labels_dir_path + file_names[img_counter] + ".txt", "a+")
             img_path = "./images/" + file_names[img_counter] + ".jpg"
             img = cv2.imread(img_path)
-            img_cpy = img.copy()
-            cv2.destroyWindow("image")
-            cv2.namedWindow("image")
-            cv2.setMouseCallback("image", draw_rectangle, img_cpy)
+            tmp_img = img.copy()
+            cv2.imshow("image", tmp_img)
+
         elif (k == ord("r") ): # refresh image (remove all markings on img)
             print("\n\tR was pressed - REFRESH * not implemented yet")
             tmp_img = img.copy()
@@ -184,10 +183,12 @@ if __name__ == "__main__":
                 print("\nERROR:\tROI " + str(roi) + " is Out-of-Bounds OR not large enough")
                 cv2.destroyWindow("roi")
                 roi = None
+                
             elif (k == ord("v") ): # view roi
                 print("\n\tViewing ROI "  + str(roi) )
                 cv2.imshow("roi", img_roi)
                 cv2.moveWindow("roi", img_w, 87)
+                
             elif(k == ord("s") ): # save roi after viewing it
                 local_roi_counter += 1
                 path = rois_dir_path + file_names[img_counter] + "_" + str(local_roi_counter) + ".jpg"
@@ -196,6 +197,7 @@ if __name__ == "__main__":
                 print(str(LABEL), x, y, w, h, file=f)
                 cv2.destroyWindow("roi")
                 roi = None
+                
             elif(k == ord("c") ): # clear roi
                 print("\n\tCleared ROI " + str(roi) )
                 roi = None
