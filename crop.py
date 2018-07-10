@@ -142,7 +142,7 @@ if __name__ == "__main__":
             print(str(global_roi_counter) + " ROI(s) were stored!\n")
             break
         
-        elif (k == ord("f") and (img_counter < number_of_imgs) ): # move forward to next image
+        elif (k == ord("f") and (img_counter < number_of_imgs - 1) ): # move forward to next image
             print("\n\tNext Image")
             roi = None
             cv2.destroyWindow("roi")
