@@ -199,6 +199,8 @@ if __name__ == "__main__":
                 print(str(LABEL), x, y, w, h, file=f)
                 cv2.destroyWindow("roi")
                 roi = None
+                tmp_img = img.copy()
+                cv2.imshow("image", tmp_img)
                 
             elif(k == ord("c") ): # clear roi
                 print("\n\tCleared ROI " + str(roi) )
