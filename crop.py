@@ -25,7 +25,7 @@ import os, sys
 from subprocess import check_output
 
 ''' CONSTANTS '''
-LABEL = 2
+LABEL = 11 # 1 - 9 reserved for DICE, 10 is old orange gate, 11 is new black and red
 SQUARE = True
 
 ''' GLOBAL VARIABLES ''' 
@@ -35,68 +35,44 @@ roi = None
 img = None
 
 
-# overloaded to handle just the coords
+# normalizes the x, y, w, h coords when dragged from different directions
 def get_roi(x, y, w, h):
     if (y > h and x > w): # lower right to upper left
-        print("y > h and x > w \t LR 2 UL")
         return (w, h, x, y)
     elif (y < h and x > w): # upper right to lower left
-        print("y < h and x > w \t UR 2 LL")
         return (w, y, x, h)
     elif (y > h and x < w): # lower left to upper right
-        print("y > h and x < w \t LL 2 UR")
         return(x, h, w, y)
     elif (y == h and x == w):
-        return (None, None, None, None)
-    else: # upper left to lower right
-        print("y < h and x < w \t UL 2 LR")
-        return (x, y, w, h)
+        return (None, None, None, None) # roi too small
+    else:
+        return (x, y, w, h) # upper left to lower right
 
-# reshapes a ROI to a square image
+
+# reshape an ROI to a square image
+# tuple in, tuple out
 def roi_to_square(x, y, w, h):
     frame_y, frame_x, ch = img.shape # since img is global var
     x_shape = w - x # size of x ROI
     y_shape = h - y # size of y ROI
     
-    print("x, y, w, h:", x, y, w, h)
-    print("x_shape, y_shape:", x_shape, y_shape)
-    
     if(x_shape > y_shape):
         y_diff = (x_shape - y_shape) // 2
-        print("x_shape > y_shape")
-        print("y_diff", y_diff)
-        
         if( (y - y_diff) < 0):
-            print("y - y_diff < 0:", y - y_diff, "\n")
-            return (x, y, w, h + (y_diff * 2) ) # add to right side
-        
+            return (x, y, w, h + (y_diff * 2) ) # add only to bottom
         elif( (h + y_diff) > frame_y):
-            print("h + y_diff > frame_y:", h + y_diff, frame_y, "\n")
-            return (x, y - (y_diff * 2), w, h) # add to left side
-        
+            return (x, y - (y_diff * 2), w, h) # add only to top
         else:
-            print("y_diff OK:", y_diff, "\n")
-            return (x, y - y_diff, w, h + y_diff) # add to left and right side
-        
+            return (x, y - y_diff, w, h + y_diff) # add to both top and bottom
     elif(y_shape > x_shape):
         x_diff = (y_shape - x_shape) // 2
-        print("y_shape > x_shape")
-        print("x_diff", x_diff)
-
         if( (x - x_diff) < 0):
-            print("x - x_diff < 0:", x - x_diff, "\n")
-            return (x, y, w + (x_diff * 2), h)
-        
+            return (x, y, w + (x_diff * 2), h) # add only to right side
         elif( (w + x_diff) > frame_x):
-            print("w + x_diff > frame_x:", w + x_diff, frame_x, "\n")
-            return (x - (x_diff * 2), y, w, h)
-        
+            return (x - (x_diff * 2), y, w, h) # add only to left side
         else:
-            print("x_diff OK:", x_diff, "\n")
-            return (x - x_diff, y, w + x_diff, h) # add to left and right
-        
+            return (x - x_diff, y, w + x_diff, h) # add to left and right side
     else:
-        print("x_shape y_shape SQUARE", x_shape, y_shape, "\n")
         return (x, y, w, h) # already square
     
 
@@ -111,7 +87,7 @@ def get_file_names_from_dir(file_path):
         return sorted(ls)
 
 
-# mouse callback function
+# mouse callback function for drawing boxes
 def draw_rectangle(event, x, y, flags, param):
     global ix, iy, drawing, roi
     
@@ -227,10 +203,8 @@ if __name__ == "__main__":
             cv2.imshow("image", tmp_img)
         
         if (roi is not None): # if ROI has been created
-            print("\troi before:", roi)
             roi_x, roi_y, roi_w, roi_h = roi
             x, y, w, h = get_roi(roi_x, roi_y, roi_w, roi_h) # returns the ROI from original image
-            print("\troi after:  ", x, y, w, h)
             
             if(SQUARE):
                 x_sq, y_sq, w_sq, h_sq = roi_to_square(x, y, w, h) # squares the bounding box
