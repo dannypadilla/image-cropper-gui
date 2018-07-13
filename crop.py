@@ -31,7 +31,8 @@ SQUARE = True
 ''' GLOBAL VARIABLES ''' 
 drawing = False # true if mouse is pressed
 ix, iy = -1, -1
-roi = None
+#roi = None
+roi = (0, 0, 0, 0)
 img = None
 
 
@@ -44,7 +45,7 @@ def get_roi(x, y, w, h):
     elif (y > h and x < w): # lower left to upper right
         return(x, h, w, y)
     elif (y == h and x == w):
-        return (None, None, None, None) # roi too small
+        return (0, 0, 0, 0) # roi too small
     else:
         return (x, y, w, h) # upper left to lower right
 
@@ -169,7 +170,7 @@ if __name__ == "__main__":
         
         elif (k == ord("f") and (img_counter < number_of_imgs - 1) ): # move forward to next image
             print("\n\tNext Image")
-            roi = None
+            roi = (0, 0, 0, 0)
             cv2.destroyWindow("roi")
             img_counter += 1 # for file name purposes
             global_roi_counter += local_roi_counter
@@ -183,7 +184,7 @@ if __name__ == "__main__":
             
         elif (k == ord("d") and (img_counter > 0) ): # move back to prev image
             print("\n\tPrevious Image")
-            roi = None
+            roi = (0, 0, 0, 0)
             cv2.destroyWindow("roi")
             img_counter -= 1 # for file name purposes
             global_roi_counter += local_roi_counter
@@ -197,29 +198,29 @@ if __name__ == "__main__":
 
         elif (k == ord("r") ): # refresh image (remove all markings on img)
             print("\n\tRefreshed Image")
-            roi = None
+            roi = (0, 0, 0, 0)
             cv2.destroyWindow("roi")
             tmp_img = img.copy()
             cv2.imshow("image", tmp_img)
         
-        if (roi is not None): # if ROI has been created
+        if (roi is not (0, 0, 0, 0) ): # if ROI has been created
             roi_x, roi_y, roi_w, roi_h = roi
             x, y, w, h = get_roi(roi_x, roi_y, roi_w, roi_h) # returns the ROI from original image
             
-            if(SQUARE):
+            if (SQUARE):
                 x_sq, y_sq, w_sq, h_sq = roi_to_square(x, y, w, h) # squares the bounding box
                 img_roi = img[y_sq:h_sq, x_sq:w_sq, :]
             else:
                 img_roi = img[y:h, x:w, :]
 
-            if img_roi is None: # bug check - need to identify small boxes
+            if (img_roi is None): # bug check - need to identify small boxes
                 print("\nERROR:\tROI " + str(roi) + " is Out-of-Bounds OR not large enough")
                 cv2.destroyWindow("roi")
-                roi = None
+                roi = (0, 0, 0, 0)
                 tmp_img = img.copy()
                 cv2.imshow("image", tmp_img)
                 
-            elif (k == ord("v") ): # view roi
+            elif(k == ord("v") ): # view roi
                 print("\n\tViewing ROI "  + str(roi) )
                 print("\t\tShape", img_roi.shape)
                 cv2.imshow("roi", img_roi)
@@ -232,13 +233,13 @@ if __name__ == "__main__":
                 cv2.imwrite(path, img_roi)
                 print(str(LABEL), x, y, w, h, file=f)
                 cv2.destroyWindow("roi")
-                roi = None
+                roi = (0, 0, 0, 0)
                 tmp_img = img.copy()
                 cv2.imshow("image", tmp_img)
                 
             elif(k == ord("c") ): # clear roi
                 print("\n\tCleared ROI " + str(roi) )
-                roi = None
+                roi = (0, 0, 0, 0)
                 cv2.destroyWindow("roi")
                 tmp_img = img.copy()
                 cv2.imshow("image", tmp_img)
