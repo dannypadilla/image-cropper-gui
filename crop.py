@@ -18,8 +18,6 @@ q - quit
 Output:
  Stores a cropped ROI to ./rois/
  Stores coords of cropped ROI as a .txt file corresponding to the img name to ./labels/
-
-error check: for images too small, calc area of rectange
 '''
 import cv2
 import numpy as np
@@ -28,6 +26,7 @@ from subprocess import check_output
 
 ''' CONSTANTS '''
 LABEL = 2
+SQUARE = True
 
 ''' GLOBAL VARIABLES ''' 
 drawing = False # true if mouse is pressed
@@ -36,20 +35,32 @@ roi = None
 img = None
 
 
-# handle different mouse dragging directions
-def get_roi(img, x, y, w, h):
+# overloaded to handle just the coords
+def get_roi(x, y, w, h):
     if (y > h and x > w): # lower right to upper left
-        img_roi = img[h:y, w:x]
+        return (w, h, x, y)
     elif (y < h and x > w): # upper right to lower left
-        img_roi = img[y:h, w:x]
+        return (w, y, x, h)
     elif (y > h and x < w): # lower left to upper right
-        img_roi = img[h:y, x:w]
+        return(x, h, w, y)
     elif (y == h and x == w):
-        img_roi = None
+        return (None, None, None, None)
     else: # upper left to bottom right
-        img_roi = img[y:h, x:w]
-    return img_roi
+        return (x, y, w, h)
 
+# reshapes a ROI to a square image
+def roi_to_square(x, y, w, h):
+    x_shape = w - x
+    y_shape = h - y
+    if(x_shape > y_shape):
+        y_diff = (x_shape - y_shape) // 2
+        return (x, y - y_diff, w, h + y_diff) # add to top and bottom
+    elif(y_shape > x_shape):
+        x_diff = (y_shape - x_shape) // 2
+        return (x - x_diff, y, w + x_diff, h) # add to left and right
+    else:
+        return (x, y, w, h) # already square
+    
 
 # gets file names from a dir - includes file extension
 # returns as a list
@@ -178,9 +189,16 @@ if __name__ == "__main__":
             cv2.imshow("image", tmp_img)
         
         if (roi is not None): # if ROI has been created
-            x, y, w, h = roi
-            img_roi = get_roi(img, x, y, w, h)
             
+            roi_x, roi_y, roi_w, roi_h = roi
+            x, y, w, h = get_roi(roi_x, roi_y, roi_w, roi_h) # returns the ROI from original image
+            
+            if(SQUARE):
+                x_sq, y_sq, w_sq, h_sq = roi_to_square(roi_x, roi_y, roi_w, roi_h) # squares the bounding box
+                img_roi = img[y_sq:h_sq, x_sq:w_sq, :]
+            else:
+                img_roi = img[y:h, x:w, :]
+
             if img_roi is None: # bug check - need to identify small boxes
                 print("\nERROR:\tROI " + str(roi) + " is Out-of-Bounds OR not large enough")
                 cv2.destroyWindow("roi")
@@ -190,6 +208,7 @@ if __name__ == "__main__":
                 
             elif (k == ord("v") ): # view roi
                 print("\n\tViewing ROI "  + str(roi) )
+                print("\t\tShape", img_roi.shape)
                 cv2.imshow("roi", img_roi)
                 cv2.moveWindow("roi", img_w, 87)
                 
