@@ -87,6 +87,17 @@ def get_file_names_from_dir(file_path):
         return sorted(ls)
 
 
+# creates a txt file to append the label and ROI coordinates
+# returns the file object
+def create_txt_file(path):
+    try:
+        txt_file = open(path, "a+")
+    except:
+        print("File I/O error")
+        exit()
+    return txt_file
+    
+
 # mouse callback function for drawing boxes
 def draw_rectangle(event, x, y, flags, param):
     global ix, iy, drawing, roi
@@ -146,17 +157,6 @@ if __name__ == "__main__":
     cv2.setMouseCallback("image", draw_rectangle)
     cv2.imshow("image", img)
 
-    # i/o setup
-    if (img_counter < len(file_names) ): # make sure don't go out of bound
-        try:
-            f = open(labels_dir_path + file_names[img_counter] + ".txt", "a+") # maybe put this is while loop
-            # since it currently makes a txt file for all imgs.. even if no ROI is created
-        except:
-            print("File I/O error")
-            exit()
-    else:
-        print("Reached END OF IMAGES")
-
     while(1):
         
         k = cv2.waitKey(1) & 0xFF
@@ -174,8 +174,6 @@ if __name__ == "__main__":
             img_counter += 1 # for file name purposes
             global_roi_counter += local_roi_counter
             local_roi_counter = 0
-            f.close()
-            f = open(labels_dir_path + file_names[img_counter] + ".txt", "a+")
             img_path = "./images/" + file_names[img_counter] + ".jpg"
             img = cv2.imread(img_path)
             tmp_img = img.copy()
@@ -188,8 +186,6 @@ if __name__ == "__main__":
             img_counter -= 1 # for file name purposes
             global_roi_counter += local_roi_counter
             local_roi_counter = 0
-            f.close()
-            f = open(labels_dir_path + file_names[img_counter] + ".txt", "a+")
             img_path = "./images/" + file_names[img_counter] + ".jpg"
             img = cv2.imread(img_path)
             tmp_img = img.copy()
@@ -236,7 +232,11 @@ if __name__ == "__main__":
                 path = rois_dir_path + file_names[img_counter] + "_" + str(local_roi_counter) + ".jpg"
                 print("\n* Saved ROI #" + str(local_roi_counter) + " " + str(roi) + " to: " + path)
                 cv2.imwrite(path, img_roi)
-                print(str(LABEL), x, y, w, h, file=f)
+                
+                txt_file_path = labels_dir_path + file_names[img_counter] + ".txt"
+                txt_file = create_txt_file(txt_file_path)
+                print(str(LABEL), x, y, w, h, file=txt_file)
+                
                 cv2.destroyWindow("roi")
                 roi = (0, 0, 0, 0)
                 tmp_img = img.copy()
@@ -248,6 +248,7 @@ if __name__ == "__main__":
                 cv2.destroyWindow("roi")
                 tmp_img = img.copy()
                 cv2.imshow("image", tmp_img)
-                
-    f.close()
+
+    if(txt_file is not None): # if no file was ever created
+        txt_file.close()
     cv2.destroyAllWindows()
