@@ -201,6 +201,10 @@ if __name__ == "__main__":
             cv2.destroyWindow("roi")
             tmp_img = img.copy()
             cv2.imshow("image", tmp_img)
+            
+        elif(k == ord("t") ): # toggle square resize
+            SQUARE = not SQUARE
+            print("\n\tSquare toggled:", SQUARE)
         
         if (roi != (0, 0, 0, 0) ): # if ROI has been created
             roi_x, roi_y, roi_w, roi_h = roi
@@ -244,6 +248,6 @@ if __name__ == "__main__":
                 cv2.destroyWindow("roi")
                 tmp_img = img.copy()
                 cv2.imshow("image", tmp_img)
-
+                
     f.close()
     cv2.destroyAllWindows()
