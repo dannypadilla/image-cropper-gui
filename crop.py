@@ -31,8 +31,7 @@ SQUARE = True
 ''' GLOBAL VARIABLES ''' 
 drawing = False # true if mouse is pressed
 ix, iy = -1, -1
-#roi = None
-roi = (0, 0, 0, 0)
+roi = (0, 0, 0, 0) # null value - handles numerical calcs
 img = None
 
 
@@ -203,20 +202,22 @@ if __name__ == "__main__":
             tmp_img = img.copy()
             cv2.imshow("image", tmp_img)
         
-        if (roi is not (0, 0, 0, 0) ): # if ROI has been created
+        if (roi != (0, 0, 0, 0) ): # if ROI has been created
             roi_x, roi_y, roi_w, roi_h = roi
             x, y, w, h = get_roi(roi_x, roi_y, roi_w, roi_h) # returns the ROI from original image
             
             if (SQUARE):
-                x_sq, y_sq, w_sq, h_sq = roi_to_square(x, y, w, h) # squares the bounding box
-                img_roi = img[y_sq:h_sq, x_sq:w_sq, :]
+                x, y, w, h = roi_to_square(x, y, w, h) # squares the bounding box
+
+            if ( (x, y, w, h) == (0, 0, 0, 0) ): # checks for bug when mouse is clicked but no box is created
+                img_roi = None
             else:
                 img_roi = img[y:h, x:w, :]
 
             if (img_roi is None): # bug check - need to identify small boxes
                 print("\nERROR:\tROI " + str(roi) + " is Out-of-Bounds OR not large enough")
                 cv2.destroyWindow("roi")
-                roi = (0, 0, 0, 0)
+                roi = (0, 0, 0, 0) # might already be set
                 tmp_img = img.copy()
                 cv2.imshow("image", tmp_img)
                 
